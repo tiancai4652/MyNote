@@ -37,7 +37,7 @@ namespace MyNote.Base
             {
                 if (string.IsNullOrEmpty(_CurrentFile))
                 {
-                    _CurrentFile = GlobalParams.AppDataFolder + "//" + Guid.NewGuid().ToString("N");
+                    _CurrentFile = GlobalParams.AppDataFolder + "\\" + Guid.NewGuid().ToString("N");
                 }
                 return _CurrentFile;
             }
