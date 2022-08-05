@@ -1,5 +1,4 @@
-﻿using MyNote.Cache;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +18,8 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MyNote.Base;
+using MyNote.Settings;
+using System.Threading;
 
 namespace MyNote
 {
@@ -49,9 +50,12 @@ namespace MyNote
             grid.AddHandler(TextBox.MouseUpEvent, new MouseButtonEventHandler(richTextBox_MouseUp), true);
 
             window.Loaded += Window_Loaded;
+            window.Closed += Window_Closed;
+            window.Closing += Window_Closing;
             richTextBox.TextChanged += RichTextBox_TextChanged;
         }
 
+    
         void InitCorlor()
         {
             MainBackgroundColor = (Color)ColorConverter.ConvertFromString("#202020");
@@ -89,8 +93,11 @@ namespace MyNote
             TextRange range;
             FileStream fStream;
             range = new TextRange(richTB.Document.ContentStart, richTB.Document.ContentEnd);
-            fStream = new FileStream(_fileName, FileMode.Create);
-            range.Save(fStream, DataFormats.XamlPackage);
+            fStream = new FileStream(_fileName, FileMode.OpenOrCreate);
+            richTB.Dispatcher.Invoke(() =>
+            {
+                range.Save(fStream, DataFormats.XamlPackage);
+            });
             fStream.Close();
         }
 
@@ -107,7 +114,7 @@ namespace MyNote
             }
         }
 
-        private void PrintCommand(RichTextBox richTB)
+        void PrintCommand(RichTextBox richTB)
         {
             PrintDialog pd = new PrintDialog();
             if ((pd.ShowDialog() == true))
@@ -118,18 +125,75 @@ namespace MyNote
             }
         }
 
+        int _Steps;
+        public int Steps
+        {
+            get
+            {
+                lockForSteps.EnterReadLock();
+                try
+                {
+                    return _Steps;
+                }
+                finally
+                {
+                    lockForSteps.ExitReadLock();
+                }
+            }
+            set
+            {
+                lockForSteps.EnterWriteLock();
+                try
+                {
+                    _Steps = value;
+                }
+                finally
+                {
+                    lockForSteps.ExitWriteLock();
+                }
+            }
+        }
+
+        ReaderWriterLockSlim lockForSteps = new ReaderWriterLockSlim();
+        CancellationTokenSource cancellationTokenSourceForSaveContent;
+        DateTime? lastSaveContentTime;
+        void SaveContentInTask()
+        {
+            cancellationTokenSourceForSaveContent = new CancellationTokenSource();
+            Task.Factory.StartNew(() =>
+            {
+                if (lastSaveContentTime == null)
+                {
+                    lastSaveContentTime = DateTime.Now;
+                }
+                while (true)
+                {
+                    bool isOverTime = (DateTime.Now - lastSaveContentTime)?.TotalMilliseconds > AutoSaveConfig.SaveInternalMs;
+                    bool isOverSteps = Steps > AutoSaveConfig.SaveSteps;
+                    if (isOverTime|| isOverSteps)
+                    {
+                        SaveContent();
+                        lastSaveContentTime = DateTime.Now;
+                        Steps = 0;
+                    }
+                    Thread.Sleep(500);
+                }
+            }, cancellationTokenSourceForSaveContent.Token);
+        }
+
+
         #endregion
 
         #region Config
 
-        ConfigData _CurrentConfigData;
-        ConfigData CurrentConfigData
+        CacheConfig _CurrentConfigData;
+        CacheConfig CurrentConfigData
         {
             get
             {
                 if (_CurrentConfigData == null)
                 {
-                    _CurrentConfigData = new ConfigData();
+                    _CurrentConfigData = new CacheConfig();
                     _CurrentConfigData.CreateTime = DateTime.Now;
                     _CurrentConfigData.UpdateTime = DateTime.Now;
                     _CurrentConfigData.CurrentFile = GlobalParams.CurrentFile;
@@ -141,14 +205,14 @@ namespace MyNote
                 _CurrentConfigData = value;
             }
         }
-        ConfigData ReadConfig()
+        CacheConfig ReadConfig()
         {
             if (File.Exists(GlobalParams.ConfigFile))
             {
                 var str = File.ReadAllText(GlobalParams.ConfigFile);
                 if (str.Length != 0)
                 {
-                    ConfigData configData = JsonConvert.DeserializeObject<ConfigData>(str);
+                    CacheConfig configData = JsonConvert.DeserializeObject<CacheConfig>(str);
                     return configData;
                 }
             }
@@ -190,15 +254,33 @@ namespace MyNote
         #endregion
 
         #region Event
+
+        private void Window_Closing(object? sender, CancelEventArgs e)
+        {
+            cancellationTokenSourceForSaveContent?.Cancel();
+            while (cancellationTokenSourceForSaveContent != null && !cancellationTokenSourceForSaveContent.IsCancellationRequested)
+            {
+                Thread.Sleep(10);
+            }
+            SaveContent();
+        }
+
+
+        private void Window_Closed(object? sender, EventArgs e)
+        {
+
+        }
+
         private void RichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SaveContent();
+            Steps++;
         }
 
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             ReadContent();
+            SaveContentInTask();
         }
 
         private void TitleGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

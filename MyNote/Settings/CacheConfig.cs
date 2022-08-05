@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyNote.Cache
+namespace MyNote.Settings
 {
-    public class ConfigData
+    public class CacheConfig
     {
         public DateTime CreateTime { get; set; }
         public string? CurrentFile { get; set; }
 
         public DateTime UpdateTime { get; set; }
-
     }
 }
