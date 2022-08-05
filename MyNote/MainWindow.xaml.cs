@@ -54,7 +54,6 @@ namespace MyNote
             window.Closing += Window_Closing;
             richTextBox.TextChanged += RichTextBox_TextChanged;
         }
-
     
         void InitCorlor()
         {
@@ -84,11 +83,18 @@ namespace MyNote
             if (configDataTemp != null)
             {
                 CurrentConfigData = configDataTemp;
+                var str = File.ReadAllText(CurrentConfigData.CurrentFile);
+                if (!string.IsNullOrEmpty(str))
+                {
+                    LoadXamlPackage(CurrentConfigData.CurrentFile, richTextBox);
+                }
             }
-            var str = File.ReadAllText(CurrentConfigData.CurrentFile);
-            if (!string.IsNullOrEmpty(str))
+            else
             {
-                LoadXamlPackage(CurrentConfigData.CurrentFile, richTextBox);
+                CurrentConfigData = new CacheConfig();
+                CurrentConfigData.CreateTime = DateTime.Now;
+                CurrentConfigData.UpdateTime = DateTime.Now;
+                CurrentConfigData.CurrentFile = GlobalParams.CurrentFile;
             }
         }
 
@@ -103,6 +109,7 @@ namespace MyNote
                 range.Save(fStream, DataFormats.XamlPackage);
             });
             fStream.Close();
+            //File.WriteAllText(_fileName, range.Text);
         }
 
         void LoadXamlPackage(string _fileName, RichTextBox richTB)
@@ -195,13 +202,7 @@ namespace MyNote
         {
             get
             {
-                if (_CurrentConfigData == null)
-                {
-                    _CurrentConfigData = new CacheConfig();
-                    _CurrentConfigData.CreateTime = DateTime.Now;
-                    _CurrentConfigData.UpdateTime = DateTime.Now;
-                    _CurrentConfigData.CurrentFile = GlobalParams.CurrentFile;
-                }
+               
                 return _CurrentConfigData;
             }
             set
