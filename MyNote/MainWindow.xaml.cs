@@ -1,6 +1,9 @@
-﻿using System;
+﻿using MyNote.Cache;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MyNote.Base;
 
 namespace MyNote
 {
@@ -31,8 +35,6 @@ namespace MyNote
             InitCorlor();
         }
 
-        
-
         void InitEvent()
         {
             window.MouseDown += window_MouseDown;
@@ -47,9 +49,8 @@ namespace MyNote
             grid.AddHandler(TextBox.MouseUpEvent, new MouseButtonEventHandler(richTextBox_MouseUp), true);
 
             window.Loaded += Window_Loaded;
+            richTextBox.TextChanged += RichTextBox_TextChanged;
         }
-
-
 
         void InitCorlor()
         {
@@ -58,6 +59,110 @@ namespace MyNote
             WindowBorderCorlor = (Color)ColorConverter.ConvertFromString("#459BAC");
         }
 
+        #region Key
+
+
+
+
+        #endregion
+
+        #region AutoSave/ReadContent
+
+        void SaveContent()
+        {
+            SaveXamlPackage(GlobalParams.CurrentFile, richTextBox);
+            UpdateConfig();
+        }
+
+        void ReadContent()
+        {
+            CurrentConfigData = ReadConfig();
+            var str = File.ReadAllText(CurrentConfigData.CurrentFile);
+            if (!string.IsNullOrEmpty(str))
+            {
+                LoadXamlPackage(CurrentConfigData.CurrentFile, richTextBox);
+            }
+        }
+
+        void SaveXamlPackage(string _fileName, RichTextBox richTB)
+        {
+            TextRange range;
+            FileStream fStream;
+            range = new TextRange(richTB.Document.ContentStart, richTB.Document.ContentEnd);
+            fStream = new FileStream(_fileName, FileMode.Create);
+            range.Save(fStream, DataFormats.XamlPackage);
+            fStream.Close();
+        }
+
+        void LoadXamlPackage(string _fileName, RichTextBox richTB)
+        {
+            TextRange range;
+            FileStream fStream;
+            if (File.Exists(_fileName))
+            {
+                range = new TextRange(richTB.Document.ContentStart, richTB.Document.ContentEnd);
+                fStream = new FileStream(_fileName, FileMode.OpenOrCreate);
+                range.Load(fStream, DataFormats.XamlPackage);
+                fStream.Close();
+            }
+        }
+
+        private void PrintCommand(RichTextBox richTB)
+        {
+            PrintDialog pd = new PrintDialog();
+            if ((pd.ShowDialog() == true))
+            {
+                //use either one of the below
+                pd.PrintVisual(richTB as Visual, "printing as visual");
+                pd.PrintDocument((((IDocumentPaginatorSource)richTB.Document).DocumentPaginator), "printing as paginator");
+            }
+        }
+
+        #endregion
+
+        #region Config
+
+        ConfigData _CurrentConfigData;
+        ConfigData CurrentConfigData
+        {
+            get
+            {
+                if (_CurrentConfigData == null)
+                {
+                    _CurrentConfigData = new ConfigData();
+                    _CurrentConfigData.CreateTime = DateTime.Now;
+                    _CurrentConfigData.UpdateTime = DateTime.Now;
+                    _CurrentConfigData.CurrentFile = GlobalParams.CurrentFile;
+                }
+                return _CurrentConfigData;
+            }
+            set
+            {
+                _CurrentConfigData = value;
+            }
+        }
+        ConfigData ReadConfig()
+        {
+            if (File.Exists(GlobalParams.ConfigFile))
+            {
+                var str = File.ReadAllText(GlobalParams.ConfigFile);
+                if (str.Length != 0)
+                {
+                    ConfigData configData = JsonConvert.DeserializeObject<ConfigData>(str);
+                    return configData;
+                }
+            }
+            return null;
+        }
+        void UpdateConfig()
+        {
+
+            CurrentConfigData.UpdateTime = DateTime.Now;
+            var str = JsonConvert.SerializeObject(CurrentConfigData);
+            File.WriteAllText(GlobalParams.ConfigFile, str);
+        }
+
+        #endregion
 
         #region Color
 
@@ -84,12 +189,16 @@ namespace MyNote
 
         #endregion
 
-
         #region Event
+        private void RichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SaveContent();
+        }
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-          
+            ReadContent();
         }
 
         private void TitleGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -152,7 +261,7 @@ namespace MyNote
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Checks if a property already matches a desired value. Sets the property and
