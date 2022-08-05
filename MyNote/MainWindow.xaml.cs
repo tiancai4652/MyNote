@@ -80,7 +80,11 @@ namespace MyNote
 
         void ReadContent()
         {
-            CurrentConfigData = ReadConfig();
+           var configDataTemp = ReadConfig();
+            if (configDataTemp != null)
+            {
+                CurrentConfigData = configDataTemp;
+            }
             var str = File.ReadAllText(CurrentConfigData.CurrentFile);
             if (!string.IsNullOrEmpty(str))
             {

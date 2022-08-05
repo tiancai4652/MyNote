@@ -38,6 +38,10 @@ namespace MyNote.Base
                 if (string.IsNullOrEmpty(_CurrentFile))
                 {
                     _CurrentFile = GlobalParams.AppDataFolder + "\\" + Guid.NewGuid().ToString("N");
+                    if (!File.Exists(_CurrentFile))
+                    {
+                        File.Create(_CurrentFile).Close();
+                    }
                 }
                 return _CurrentFile;
             }
