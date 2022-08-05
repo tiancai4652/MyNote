@@ -24,10 +24,82 @@ namespace MyNote
         public MainWindow()
         {
             InitializeComponent();
-         
+            InitEvent();
         }
 
-      
+        void InitEvent()
+        {
+            window.MouseDown += window_MouseDown;
+            window.MouseUp += window_MouseUp;
+            window.PreviewMouseDown += window_PreviewMouseDown;
+            window.PreviewMouseUp += window_PreviewMouseUp;
+            titleGrid.PreviewMouseLeftButtonDown += TitleGrid_MouseLeftButtonDown;
 
+            grid.PreviewMouseDown += richTextBox_PreviewMouseDown;
+            grid.PreviewMouseUp += richTextBox_PreviewMouseUp;
+            grid.AddHandler(TextBox.MouseDownEvent, new MouseButtonEventHandler(richTextBox_MouseDown), true);
+            grid.AddHandler(TextBox.MouseUpEvent, new MouseButtonEventHandler(richTextBox_MouseUp), true);
+        }
+
+
+
+
+
+        #region Event
+
+        private void TitleGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("window_MouseDown");
+
+        }
+
+        private void window_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("window_MouseUp");
+
+        }
+
+        private void window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("window_PreviewMouseDown");
+
+        }
+
+        private void window_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("window_PreviewMouseUp");
+
+        }
+
+        private void richTextBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("grid_MouseDown");
+
+        }
+
+        private void richTextBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("grid_PreviewMouseDown");
+
+        }
+
+        private void richTextBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("grid_MouseUp");
+
+        }
+
+        private void richTextBox_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine("grid_PreviewMouseUp");
+
+        }
+
+        #endregion
     }
 }

@@ -5,33 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyNote"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="Black">
-    <Grid>
-        <Grid>
-            <RichTextBox Background="Black" Foreground="White" FontSize="20" BorderBrush="{x:Null}" BorderThickness="0" Margin="10,20,0,0">
+        Title="MainWindow" Height="450" Width="800" Background="Transparent" AllowsTransparency="True" Name="window" WindowStyle="None">
+    <Window.Resources>
+        <ResourceDictionary Source="/Resource/ScrollViewer.xaml">
 
-                <RichTextBox.Document>
-
-                    <FlowDocument Focusable="True" LineHeight="5">
-
-                        <Paragraph>
-                            This is flow content and you can
-                            <Bold>edit me!</Bold>
-                        </Paragraph>
-                        <Paragraph>
-                            This is flow content and you can
-                            <Bold>edit me!</Bold>
-                        </Paragraph>
-
-                    </FlowDocument>
-
-                </RichTextBox.Document>
-
-            </RichTextBox>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Border BorderThickness="1" BorderBrush="AliceBlue"  CornerRadius="10" Background="Black" >
+        <Grid  Name="grid"  >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
 
 
+            <Grid Grid.Row="0" Name="titleGrid" Background="Black" Margin="8">
+
+            </Grid>
+            <Grid Grid.Row="1" Name="contextGrid" Background="#FF171414" >
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
+
+                    <RichTextBox Background="White" Foreground="White" FontSize="20" BorderBrush="{x:Null}" BorderThickness="0" Margin="10,20,0,0" Name="richTextBox" >
+                        <RichTextBox.Document>
+                            <FlowDocument Focusable="True" LineHeight="5">
+                                <Paragraph>
+                                    This is flow content and you can
+                                    <Bold>edit me!</Bold>
+                                </Paragraph>
+                                <Paragraph>
+                                    This is flow content and you can
+                                    <Bold>edit me!</Bold>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox.Document>
+                    </RichTextBox>
+                </ScrollViewer>
+            </Grid>
+            <Grid Grid.Row="2" Name="stateGrid" Background="Black" Margin="8">
+
+            </Grid>
         </Grid>
-
-
-    </Grid>
+    </Border>
 </Window>
