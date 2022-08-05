@@ -4,14 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyNote"
+        xmlns:convertor="clr-namespace:MyNote.Convertor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="Transparent" AllowsTransparency="True" Name="window" WindowStyle="None">
+        Title="MainWindow" Height="450" Width="800" Background="Transparent" AllowsTransparency="True" Name="window" WindowStyle="None" ResizeMode="CanResize">
     <Window.Resources>
-        <ResourceDictionary Source="/Resource/ScrollViewer.xaml">
-
+        <ResourceDictionary>
+            <convertor:Corlor2BackgroundConvertor x:Key="Corlor2BackgroundConvertor"/>
         </ResourceDictionary>
     </Window.Resources>
-    <Border BorderThickness="1" BorderBrush="AliceBlue"  CornerRadius="10" Background="Black" >
+    <Border BorderThickness="1" BorderBrush="{Binding WindowBorderCorlor,Converter={StaticResource Corlor2BackgroundConvertor}}"  CornerRadius="10" Background="{Binding MainBackgroundColor,Converter={StaticResource Corlor2BackgroundConvertor}}" Name="border">
         <Grid  Name="grid"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"/>
@@ -20,13 +21,13 @@
             </Grid.RowDefinitions>
 
 
-            <Grid Grid.Row="0" Name="titleGrid" Background="Black" Margin="8">
+            <Grid Grid.Row="0" Name="titleGrid" Background="{Binding Background,ElementName=border}" Margin="8">
 
             </Grid>
-            <Grid Grid.Row="1" Name="contextGrid" Background="#FF171414" >
+            <Grid Grid.Row="1" Name="contextGrid" Background="{Binding Background,ElementName=richTextBox}" >
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
 
-                    <RichTextBox Background="White" Foreground="White" FontSize="20" BorderBrush="{x:Null}" BorderThickness="0" Margin="10,20,0,0" Name="richTextBox" >
+                    <RichTextBox Background="{Binding TextBackgroundColor,Converter={StaticResource Corlor2BackgroundConvertor}}" Foreground="White" FontSize="20" BorderBrush="{x:Null}" BorderThickness="0" Margin="10,20,0,0" Name="richTextBox" >
                         <RichTextBox.Document>
                             <FlowDocument Focusable="True" LineHeight="5">
                                 <Paragraph>
@@ -42,7 +43,7 @@
                     </RichTextBox>
                 </ScrollViewer>
             </Grid>
-            <Grid Grid.Row="2" Name="stateGrid" Background="Black" Margin="8">
+            <Grid Grid.Row="2" Name="stateGrid" Background="{Binding Background,ElementName=border}" Margin="8">
 
             </Grid>
         </Grid>
