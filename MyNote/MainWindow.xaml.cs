@@ -21,6 +21,7 @@ using MyNote.Base;
 using MyNote.Settings;
 using System.Threading;
 using MyNote.RecentFile;
+using System.Globalization;
 
 namespace MyNote
 {
@@ -58,7 +59,7 @@ namespace MyNote
             richTextBox.MouseWheel += RichTextBox_MouseWheel;
         }
 
-      
+
 
         void InitCorlor()
         {
@@ -86,50 +87,9 @@ namespace MyNote
 
         #endregion
 
-        #region Key&Mouse
-
-        bool isCtrl;
-        bool isAlt;
-        bool isShift;
-        private void RichTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            CheckModifierKeys();
-            //打开最近的文件夹
-            if (isAlt && Keyboard.IsKeyDown(Key.R))
-            {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
-                System.Diagnostics.Process.Start("Explorer.exe", path);
-            }
-            //设置目标
-            else if (isAlt && Keyboard.IsKeyDown(Key.T))
-            {
-                Paragraph paragraph = new Paragraph();
-                InlineUIContainer inlineUIContainer = new InlineUIContainer();
-                Image image = new Image();
-                image.Width = image.Height = 50;
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.UriSource = new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute);
-                bi.EndInit();
-                image.Source = bi;
-                inlineUIContainer.Child = image;
-                paragraph.Inlines.Add(inlineUIContainer);
-                myFlowDocument.Blocks.Add(paragraph);
-            }
-        }
-
-        void CheckModifierKeys()
-        {
-            isCtrl = (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0 ||
-                   (Keyboard.GetKeyStates(Key.RightCtrl) & KeyStates.Down) > 0;
-            isAlt = (Keyboard.GetKeyStates(Key.LeftAlt) & KeyStates.Down) > 0 ||
-                 (Keyboard.GetKeyStates(Key.RightAlt) & KeyStates.Down) > 0;
-            isShift = (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0 ||
-                 (Keyboard.GetKeyStates(Key.RightShift) & KeyStates.Down) > 0;
-        }
-
-        double fontSizeChangeDelta = 1;
-        double fontSizeMinValue = 5;
+        #region Zoom
+        List<FrameworkElement> uIElementsWithFontSameHeight = new List<FrameworkElement>();
+       
         /// <summary>
         /// Zoom=Ctrl+MouseWheel
         /// </summary>
@@ -148,8 +108,97 @@ namespace MyNote
                 {
                     TextFontSize = TextFontSize - fontSizeChangeDelta > fontSizeMinValue ? TextFontSize - fontSizeChangeDelta : TextFontSize;
                 }
+                var size = MeasureFontSize();
+                uIElementsWithFontSameHeight.ForEach(t => t.Height = t.Width = size.Height);
             }
         }
+        #endregion
+
+        #region AddTargetLine
+
+        void AddTargetLine(ref Paragraph paragraph)
+        {
+            InlineUIContainer inlineUIContainer = new InlineUIContainer();
+            Image image = new Image();
+            var size = MeasureFontSize();
+            image.Width = size.Height;
+            image.Height = size.Height;
+            BitmapImage bi = new BitmapImage();
+            bi.BeginInit();
+            bi.UriSource = new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute);
+            bi.EndInit();
+            image.Source = bi;
+            inlineUIContainer.Child = image;
+            paragraph.Inlines.Add(" ");
+            paragraph.Inlines.Add(inlineUIContainer);
+            paragraph.Inlines.Add(" ");
+            myFlowDocument.Blocks.Add(paragraph);
+            uIElementsWithFontSameHeight.Add(image);
+        }
+
+        #endregion
+
+        #region Key&Mouse
+
+        bool isCtrl;
+        bool isAlt;
+        bool isShift;
+        private void RichTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            CheckModifierKeys();
+            //打开最近的文件夹
+            if (isAlt && Keyboard.IsKeyDown(Key.R))
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
+                System.Diagnostics.Process.Start("Explorer.exe", path);
+            }
+            //设置Target
+            else if (isAlt && Keyboard.IsKeyDown(Key.T))
+            {
+                Paragraph paragraph = new Paragraph();
+                Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
+                if(paragraphTemp.Inlines.Count==1)
+                {
+                    if (paragraphTemp.Inlines.First() is Run)
+                    {
+                        if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
+                        {
+                            paragraph = paragraphTemp;
+                        }
+                    }
+                }
+                AddTargetLine(ref paragraph);
+                richTextBox.CaretPosition = paragraph.ContentEnd;
+            }
+        }
+
+        private Size MeasureFontSize(string candidate = "123ABC")
+        {
+            var formattedText = new FormattedText(
+                candidate,
+                CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                new Typeface(this.myFlowDocument.FontFamily, this.myFlowDocument.FontStyle, this.myFlowDocument.FontWeight, this.myFlowDocument.FontStretch),
+                this.myFlowDocument.FontSize,
+                Brushes.Black,
+                new NumberSubstitution(),
+                1);
+
+            return new Size(formattedText.Width, formattedText.Height);
+        }
+
+        void CheckModifierKeys()
+        {
+            isCtrl = (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0 ||
+                   (Keyboard.GetKeyStates(Key.RightCtrl) & KeyStates.Down) > 0;
+            isAlt = (Keyboard.GetKeyStates(Key.LeftAlt) & KeyStates.Down) > 0 ||
+                 (Keyboard.GetKeyStates(Key.RightAlt) & KeyStates.Down) > 0;
+            isShift = (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0 ||
+                 (Keyboard.GetKeyStates(Key.RightShift) & KeyStates.Down) > 0;
+        }
+
+        double fontSizeChangeDelta = 1;
+        double fontSizeMinValue = 5;
 
         #endregion
 

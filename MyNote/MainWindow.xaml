@@ -53,7 +53,8 @@
                         BorderThickness="0"
                         FontFamily="Segoe UI"
                         FontSize="{Binding TextFontSize}"
-                        Foreground="White">
+                        Foreground="White" RenderTransform="{Binding RenderTransform}">
+                        
                         <RichTextBox.Document>
 
                             <FlowDocument Name="myFlowDocument" Focusable="True" LineHeight="0.5">
