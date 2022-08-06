@@ -103,19 +103,18 @@ namespace MyNote
             //设置目标
             else if (isAlt && Keyboard.IsKeyDown(Key.T))
             {
-                BlockUIContainer blockUIContainer = new BlockUIContainer();
+                Paragraph paragraph = new Paragraph();
+                InlineUIContainer inlineUIContainer = new InlineUIContainer();
                 Image image = new Image();
                 image.Width = image.Height = 50;
                 BitmapImage bi = new BitmapImage();
-                // BitmapImage.UriSource must be in a BeginInit/EndInit block.
-
                 bi.BeginInit();
                 bi.UriSource = new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute);
                 bi.EndInit();
-
                 image.Source = bi;
-                blockUIContainer.Child = image;
-                myFlowDocument.Blocks.Add(blockUIContainer);
+                inlineUIContainer.Child = image;
+                paragraph.Inlines.Add(inlineUIContainer);
+                myFlowDocument.Blocks.Add(paragraph);
             }
         }
 

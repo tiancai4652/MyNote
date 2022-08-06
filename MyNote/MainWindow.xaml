@@ -57,12 +57,25 @@
                         <RichTextBox.Document>
 
                             <FlowDocument Name="myFlowDocument" Focusable="True" LineHeight="0.5">
-                                <!--<Paragraph>
+                                <Paragraph>
+                                    Text to precede the button...
+
+                                    <!-- Set the BaselineAlignment property to "Bottom" 
+         so that the Button aligns properly with the text. -->
+                                    <InlineUIContainer BaselineAlignment="Bottom">
+                                        <Image HorizontalAlignment="Left" Width="50" Height="50" Source="/Resource/target.png"></Image>
+                                    </InlineUIContainer>
+                                    Text to follow the button...
+                                </Paragraph>
+                                <BlockUIContainer>
+                                    <Image HorizontalAlignment="Left" Width="50" Height="50" Source="/Resource/target.png"></Image>
+                                </BlockUIContainer>
+                                <Paragraph>
                                     This is flow content and you can<Bold>edit me!</Bold>
                                 </Paragraph>
                                 <Paragraph>
                                     This is flow content and you can<Bold>edit me!</Bold>
-                                </Paragraph>-->
+                                </Paragraph>
                                
                             </FlowDocument>
                           
