@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using MyNote.Base;
 using MyNote.Settings;
 using System.Threading;
+using MyNote.RecentFile;
 
 namespace MyNote
 {
@@ -53,8 +54,12 @@ namespace MyNote
             window.Closed += Window_Closed;
             window.Closing += Window_Closing;
             richTextBox.TextChanged += RichTextBox_TextChanged;
+            richTextBox.KeyDown += RichTextBox_KeyDown;
+            richTextBox.MouseWheel += RichTextBox_MouseWheel;
         }
-    
+
+      
+
         void InitCorlor()
         {
             MainBackgroundColor = (Color)ColorConverter.ConvertFromString("#202020");
@@ -62,10 +67,67 @@ namespace MyNote
             WindowBorderCorlor = (Color)ColorConverter.ConvertFromString("#459BAC");
         }
 
-        #region Key
+        #region Properties
 
 
+        double _TextFontSize = 19;
+        public double TextFontSize
+        {
+            get
+            {
+                return _TextFontSize;
+            }
+            set
+            {
+                SetProperty(ref _TextFontSize, value);
+            }
+        }
 
+
+        #endregion
+
+        #region Key&Mouse
+
+        bool isCtrl;
+        bool isAlt;
+        bool isShift;
+        private void RichTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+          
+        }
+
+        void CheckModifierKeys()
+        {
+            isCtrl = (Keyboard.GetKeyStates(Key.LeftCtrl) & KeyStates.Down) > 0 ||
+                   (Keyboard.GetKeyStates(Key.RightCtrl) & KeyStates.Down) > 0;
+            isAlt = (Keyboard.GetKeyStates(Key.LeftAlt) & KeyStates.Down) > 0 ||
+                 (Keyboard.GetKeyStates(Key.RightAlt) & KeyStates.Down) > 0;
+            isShift = (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0 ||
+                 (Keyboard.GetKeyStates(Key.RightShift) & KeyStates.Down) > 0;
+        }
+
+        double fontSizeChangeDelta = 1;
+        double fontSizeMinValue = 5;
+        /// <summary>
+        /// Zoom=Ctrl+MouseWheel
+        /// </summary>
+        /// <param name="e"></param>
+        void Zoom(MouseWheelEventArgs e)
+        {
+            CheckModifierKeys();
+            if (isCtrl)
+            {
+                var mouseWheelDelta = e.Delta;
+                if (mouseWheelDelta > 0)
+                {
+                    TextFontSize += fontSizeChangeDelta;
+                }
+                else if (mouseWheelDelta < 0)
+                {
+                    TextFontSize = TextFontSize - fontSizeChangeDelta > fontSizeMinValue ? TextFontSize - fontSizeChangeDelta : TextFontSize;
+                }
+            }
+        }
 
         #endregion
 
@@ -259,6 +321,10 @@ namespace MyNote
         #endregion
 
         #region Event
+        private void RichTextBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            Zoom(e);
+        }
 
         private void Window_Closing(object? sender, CancelEventArgs e)
         {
@@ -286,6 +352,7 @@ namespace MyNote
         {
             ReadContent();
             SaveContentInTask();
+           
         }
 
         private void TitleGrid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

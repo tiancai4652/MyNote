@@ -52,7 +52,7 @@
                         BorderBrush="{x:Null}"
                         BorderThickness="0"
                         FontFamily="Segoe UI"
-                        FontSize="19"
+                        FontSize="{Binding TextFontSize}"
                         Foreground="White">
                         <RichTextBox.Document>
                             <FlowDocument Focusable="True" LineHeight="0.5">
