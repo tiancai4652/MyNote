@@ -93,7 +93,12 @@ namespace MyNote
         bool isShift;
         private void RichTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-          
+            CheckModifierKeys();
+            if (isAlt && Keyboard.IsKeyDown(Key.R))
+            {
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
+                System.Diagnostics.Process.Start("Explorer.exe", path);
+            }
         }
 
         void CheckModifierKeys()
