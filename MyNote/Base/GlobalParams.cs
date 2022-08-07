@@ -30,7 +30,7 @@ namespace MyNote.Base
             }
         }
 
-        static string _CurrentFile;
+        static string _CurrentFile=String.Empty;
         public static string CurrentFile
         {
             get
