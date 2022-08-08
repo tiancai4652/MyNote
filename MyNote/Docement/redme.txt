@@ -1,10 +1,10 @@
 ﻿keys
 
 Icon:
-target: alt shift T
-idea:   alt shift I
-arrow:  alt shift A
-star:   alt shift S
+target: alt 1
+idea:   alt 2
+arrow:  alt 3
+star:   alt 4
 
 folder:
 recently:shift R

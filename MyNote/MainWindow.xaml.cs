@@ -140,7 +140,7 @@ namespace MyNote
         {
             Paragraph paragraph = new Paragraph();
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            if (paragraphTemp.Inlines.Count == 1)
+            if (paragraphTemp != null && paragraphTemp.Inlines.Count == 1)
             {
                 if (paragraphTemp.Inlines.First() is Run)
                 {
@@ -192,22 +192,23 @@ namespace MyNote
                 System.Diagnostics.Process.Start("Explorer.exe", path);
             }
             //设置Target
-            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.T))
+            else if (isAlt && Keyboard.IsKeyDown(Key.D1))
             {
                 AddIconLine(IconType.Target);
             }
-            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.I))
+            else if (isAlt && Keyboard.IsKeyDown(Key.D2))
             {
                 AddIconLine(IconType.Idea);
             }
-            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.R))
+            else if (isAlt && Keyboard.IsKeyDown(Key.D3))
             {
                 AddIconLine(IconType.Arrow);
             }
-            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.S))
+            else if (isAlt && Keyboard.IsKeyDown(Key.D4))
             {
                 AddIconLine(IconType.Star);
             }
+            //e.Handled = true;
         }
 
 
@@ -216,18 +217,36 @@ namespace MyNote
         private Size MeasureFontSize(string candidate = "123ABC去")
         {
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            var formattedText = new FormattedText(
-                candidate,
-                CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
+            if (paragraphTemp != null)
+            {
+                var formattedText = new FormattedText(
+                    candidate,
+                    CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
 
-            new Typeface(paragraphTemp.FontFamily, paragraphTemp.FontStyle, paragraphTemp.FontWeight, paragraphTemp.FontStretch),
-                paragraphTemp.FontSize,
-                Brushes.Black,
-                new NumberSubstitution(),
-                1);
+                new Typeface(paragraphTemp.FontFamily, paragraphTemp.FontStyle, paragraphTemp.FontWeight, paragraphTemp.FontStretch),
+                    paragraphTemp.FontSize,
+                    Brushes.Black,
+                    new NumberSubstitution(),
+                    1);
 
-            return new Size(formattedText.Width * fontImageScale, formattedText.Height * fontImageScale);
+                return new Size(formattedText.Width * fontImageScale, formattedText.Height * fontImageScale);
+            }
+            else
+            {
+                var formattedText = new FormattedText(
+                   candidate,
+                   CultureInfo.CurrentCulture,
+                   FlowDirection.LeftToRight,
+
+               new Typeface(myFlowDocument.FontFamily, myFlowDocument.FontStyle, myFlowDocument.FontWeight, myFlowDocument.FontStretch),
+                   myFlowDocument.FontSize,
+                   Brushes.Black,
+                   new NumberSubstitution(),
+                   1);
+
+                return new Size(formattedText.Width * fontImageScale, formattedText.Height * fontImageScale);
+            }
         }
 
         void CheckModifierKeys()
