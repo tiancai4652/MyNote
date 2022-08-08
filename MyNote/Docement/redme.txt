@@ -1,0 +1,10 @@
+﻿keys
+
+Icon:
+target: alt shift T
+idea:   alt shift I
+arrow:  alt shift A
+star:   alt shift S
+
+folder:
+recently:shift R

@@ -186,31 +186,31 @@ namespace MyNote
         {
             CheckModifierKeys();
             //打开最近的文件夹
-            if (isAlt && Keyboard.IsKeyDown(Key.R))
+            if (isShift && Keyboard.IsKeyDown(Key.R))
             {
                 string path = Environment.GetFolderPath(Environment.SpecialFolder.Recent);
                 System.Diagnostics.Process.Start("Explorer.exe", path);
             }
             //设置Target
-            else if (isAlt && Keyboard.IsKeyDown(Key.T))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.T))
             {
                 AddIconLine(IconType.Target);
             }
-            else if (isAlt && Keyboard.IsKeyDown(Key.I))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.I))
             {
                 AddIconLine(IconType.Idea);
             }
-            else if (isAlt && Keyboard.IsKeyDown(Key.A))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.R))
             {
                 AddIconLine(IconType.Arrow);
             }
-            else if (isAlt && Keyboard.IsKeyDown(Key.S))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.S))
             {
                 AddIconLine(IconType.Star);
             }
         }
 
-      
+
 
         double fontImageScale = 0.8;
         private Size MeasureFontSize(string candidate = "123ABC去")
