@@ -110,6 +110,14 @@ namespace MyNote
                 }
                 var size = MeasureFontSize();
                 uIElementsWithFontSameHeight.ForEach(t => t.Height = t.Width = size.Height);
+                foreach (var block in myFlowDocument.Blocks)
+                {
+                    if (block is Paragraph)
+                    {
+                        Paragraph p = (Paragraph)block;
+                        p.FontSize = TextFontSize;
+                    }
+                }
             }
         }
         #endregion
@@ -124,12 +132,13 @@ namespace MyNote
             image.Width = size.Height;
             image.Height = size.Height;
             BitmapImage bi = new BitmapImage();
+            inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
             bi.BeginInit();
             bi.UriSource = new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute);
             bi.EndInit();
             image.Source = bi;
             inlineUIContainer.Child = image;
-            paragraph.Inlines.Add(" ");
+            //paragraph.Inlines.Add(" ");
             paragraph.Inlines.Add(inlineUIContainer);
             paragraph.Inlines.Add(" ");
             myFlowDocument.Blocks.Add(paragraph);
@@ -172,19 +181,22 @@ namespace MyNote
             }
         }
 
+        double fontImageScale = 0.8;
         private Size MeasureFontSize(string candidate = "123ABC")
         {
+            Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
             var formattedText = new FormattedText(
                 candidate,
                 CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
-                new Typeface(this.myFlowDocument.FontFamily, this.myFlowDocument.FontStyle, this.myFlowDocument.FontWeight, this.myFlowDocument.FontStretch),
-                this.myFlowDocument.FontSize,
+
+            new Typeface(paragraphTemp.FontFamily, paragraphTemp.FontStyle, paragraphTemp.FontWeight, paragraphTemp.FontStretch),
+                paragraphTemp.FontSize,
                 Brushes.Black,
                 new NumberSubstitution(),
                 1);
 
-            return new Size(formattedText.Width, formattedText.Height);
+            return new Size(formattedText.Width * fontImageScale, formattedText.Height * fontImageScale);
         }
 
         void CheckModifierKeys()
@@ -206,7 +218,7 @@ namespace MyNote
 
         void SaveContent()
         {
-            SaveXamlPackage(GlobalParams.CurrentFile, richTextBox);
+            SaveXamlPackage(CurrentConfigData.CurrentFile, richTextBox);
             UpdateConfig();
         }
 
