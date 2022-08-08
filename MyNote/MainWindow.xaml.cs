@@ -36,6 +36,7 @@ namespace MyNote
             this.DataContext = this;
             InitEvent();
             InitCorlor();
+            InitProperties();
         }
 
         void InitEvent()
@@ -68,6 +69,15 @@ namespace MyNote
             WindowBorderCorlor = (Color)ColorConverter.ConvertFromString("#459BAC");
         }
 
+        void InitProperties()
+        {
+            IconTypeImageUries.Add(IconType.Idea, new Uri(Environment.CurrentDirectory + "//Resource" + "//idea.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Arrow, new Uri(Environment.CurrentDirectory + "//Resource" + "//arrow.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Star, new Uri(Environment.CurrentDirectory + "//Resource" + "//star.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Target, new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Todo, new Uri(Environment.CurrentDirectory + "//Resource" + "//todo.png", UriKind.RelativeOrAbsolute));
+        }
+
         #region Properties
 
 
@@ -83,6 +93,8 @@ namespace MyNote
                 SetProperty(ref _TextFontSize, value);
             }
         }
+
+        Dictionary<IconType, Uri> IconTypeImageUries = new Dictionary<IconType, Uri>();
 
 
         #endregion
@@ -124,7 +136,25 @@ namespace MyNote
 
         #region AddTargetLine
 
-        void AddTargetLine(ref Paragraph paragraph)
+        void AddIconLine(IconType icontype)
+        {
+            Paragraph paragraph = new Paragraph();
+            Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
+            if (paragraphTemp.Inlines.Count == 1)
+            {
+                if (paragraphTemp.Inlines.First() is Run)
+                {
+                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
+                    {
+                        paragraph = paragraphTemp;
+                    }
+                }
+            }
+            AddIconLineInternal(ref paragraph, icontype);
+            richTextBox.CaretPosition = paragraph.ContentEnd;
+        }
+
+        void AddIconLineInternal(ref Paragraph paragraph,IconType icontype)
         {
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
             Image image = new Image();
@@ -134,7 +164,7 @@ namespace MyNote
             BitmapImage bi = new BitmapImage();
             inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
             bi.BeginInit();
-            bi.UriSource = new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute);
+            bi.UriSource = IconTypeImageUries[icontype];
             bi.EndInit();
             image.Source = bi;
             inlineUIContainer.Child = image;
@@ -164,25 +194,26 @@ namespace MyNote
             //设置Target
             else if (isAlt && Keyboard.IsKeyDown(Key.T))
             {
-                Paragraph paragraph = new Paragraph();
-                Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-                if(paragraphTemp.Inlines.Count==1)
-                {
-                    if (paragraphTemp.Inlines.First() is Run)
-                    {
-                        if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
-                        {
-                            paragraph = paragraphTemp;
-                        }
-                    }
-                }
-                AddTargetLine(ref paragraph);
-                richTextBox.CaretPosition = paragraph.ContentEnd;
+                AddIconLine(IconType.Target);
+            }
+            else if (isAlt && Keyboard.IsKeyDown(Key.I))
+            {
+                AddIconLine(IconType.Idea);
+            }
+            else if (isAlt && Keyboard.IsKeyDown(Key.A))
+            {
+                AddIconLine(IconType.Arrow);
+            }
+            else if (isAlt && Keyboard.IsKeyDown(Key.S))
+            {
+                AddIconLine(IconType.Star);
             }
         }
 
+      
+
         double fontImageScale = 0.8;
-        private Size MeasureFontSize(string candidate = "123ABC")
+        private Size MeasureFontSize(string candidate = "123ABC去")
         {
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
             var formattedText = new FormattedText(
@@ -570,4 +601,6 @@ namespace MyNote
 
         #endregion
     }
+
+    
 }

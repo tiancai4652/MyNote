@@ -18,17 +18,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resource\bofang.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Resource\arrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resource\idea.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resource\star.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resource\target.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Resource\todo_list.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Resource\todo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
