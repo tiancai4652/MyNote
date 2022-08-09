@@ -22,6 +22,7 @@ using MyNote.Settings;
 using System.Threading;
 using MyNote.RecentFile;
 using System.Globalization;
+using MyNote.Controls;
 
 namespace MyNote
 {
@@ -71,11 +72,11 @@ namespace MyNote
 
         void InitProperties()
         {
-            IconTypeImageUries.Add(IconType.Idea, new Uri(Environment.CurrentDirectory + "//Resource" + "//idea.png", UriKind.RelativeOrAbsolute));
-            IconTypeImageUries.Add(IconType.Arrow, new Uri(Environment.CurrentDirectory + "//Resource" + "//arrow.png", UriKind.RelativeOrAbsolute));
-            IconTypeImageUries.Add(IconType.Star, new Uri(Environment.CurrentDirectory + "//Resource" + "//star.png", UriKind.RelativeOrAbsolute));
-            IconTypeImageUries.Add(IconType.Target, new Uri(Environment.CurrentDirectory + "//Resource" + "//target.png", UriKind.RelativeOrAbsolute));
-            IconTypeImageUries.Add(IconType.Todo, new Uri(Environment.CurrentDirectory + "//Resource" + "//todo.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Idea, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\idea.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Arrow, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\arrow.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Star, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\star.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Target, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\target.png", UriKind.RelativeOrAbsolute));
+            IconTypeImageUries.Add(IconType.Todo, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\todo.png", UriKind.RelativeOrAbsolute));
         }
 
         #region Properties
@@ -154,6 +155,24 @@ namespace MyNote
             richTextBox.CaretPosition = paragraph.ContentEnd;
         }
 
+        void AddTimeTargetLine(IconType icontype)
+        {
+            Paragraph paragraph = new Paragraph();
+            Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
+            if (paragraphTemp != null && paragraphTemp.Inlines.Count == 1)
+            {
+                if (paragraphTemp.Inlines.First() is Run)
+                {
+                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
+                    {
+                        paragraph = paragraphTemp;
+                    }
+                }
+            }
+            AddIconLineInternal(ref paragraph, icontype);
+            richTextBox.CaretPosition = paragraph.ContentEnd;
+        }
+
         void AddIconLineInternal(ref Paragraph paragraph,IconType icontype)
         {
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
@@ -161,6 +180,45 @@ namespace MyNote
             var size = MeasureFontSize();
             image.Width = size.Height;
             image.Height = size.Height;
+            BitmapImage bi = new BitmapImage();
+            inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
+            bi.BeginInit();
+            bi.UriSource = IconTypeImageUries[icontype];
+            bi.EndInit();
+            image.Source = bi;
+            inlineUIContainer.Child = image;
+            //paragraph.Inlines.Add(" ");
+            paragraph.Inlines.Add(inlineUIContainer);
+            paragraph.Inlines.Add(" ");
+            myFlowDocument.Blocks.Add(paragraph);
+            uIElementsWithFontSameHeight.Add(image);
+        }
+
+        void AddTimeTargetLineInternal(ref Paragraph paragraph)
+        {
+            //InlineUIContainer inlineUIContainer = new InlineUIContainer();
+            //Image image = new Image();
+            //var size = MeasureFontSize();
+            //image.Width = size.Height;
+            //image.Height = size.Height;
+            //BitmapImage bi = new BitmapImage();
+            //inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
+            //bi.BeginInit();
+            //bi.UriSource = IconTypeImageUries[icontype];
+            //bi.EndInit();
+            //image.Source = bi;
+            //inlineUIContainer.Child = image;
+            ////paragraph.Inlines.Add(" ");
+            //paragraph.Inlines.Add(inlineUIContainer);
+            //paragraph.Inlines.Add(" ");
+            //myFlowDocument.Blocks.Add(paragraph);
+            //uIElementsWithFontSameHeight.Add(image);
+
+            InlineUIContainer inlineUIContainer = new InlineUIContainer();
+            TimeTarget timeTarget=new TimeTarget();
+            var size = MeasureFontSize();
+            timeTarget.Height = size.Height;
+         
             BitmapImage bi = new BitmapImage();
             inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
             bi.BeginInit();

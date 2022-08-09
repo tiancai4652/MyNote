@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MyNote"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="clr-namespace:MyNote.Controls"
     Name="window"
     Title="MainWindow"
     Width="800"
@@ -67,6 +68,11 @@
                                         <Image HorizontalAlignment="Left" Width="50" Height="50" Source="/Resource/target.png"></Image>
                                     </InlineUIContainer>
                                     Text to follow the button...
+                                </Paragraph>
+                                <Paragraph>
+                                    <InlineUIContainer BaselineAlignment="Bottom">
+                                        <controls:TimeTarget HorizontalAlignment="Left" ></controls:TimeTarget>
+                                    </InlineUIContainer>
                                 </Paragraph>
                                 <BlockUIContainer>
                                     <Image HorizontalAlignment="Left" Width="50" Height="50" Source="/Resource/target.png"></Image>
