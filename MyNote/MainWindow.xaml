@@ -2,11 +2,11 @@
     x:Class="MyNote.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MyNote.Controls"
     xmlns:convertor="clr-namespace:MyNote.Convertor"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MyNote"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="clr-namespace:MyNote.Controls"
     Name="window"
     Title="MainWindow"
     Width="800"
@@ -19,6 +19,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <convertor:Corlor2BackgroundConvertor x:Key="Corlor2BackgroundConvertor" />
+            <Style x:Key="BlockUIContainerFocusStyle" TargetType="BlockUIContainer" />
         </ResourceDictionary>
     </Window.Resources>
     <Border
@@ -54,28 +55,38 @@
                         BorderThickness="0"
                         FontFamily="Segoe UI"
                         FontSize="{Binding TextFontSize}"
-                        Foreground="White" RenderTransform="{Binding RenderTransform}">
-                        
+                        Foreground="White"
+                        IsDocumentEnabled="True"
+                        RenderTransform="{Binding RenderTransform}">
+
                         <RichTextBox.Document>
 
-                            <FlowDocument Name="myFlowDocument" Focusable="True" LineHeight="0.5">
+                            <FlowDocument Name="myFlowDocument" LineHeight="0.5">
                                 <Paragraph>
                                     Text to precede the button...
-
-                                    <!-- Set the BaselineAlignment property to "Bottom" 
-         so that the Button aligns properly with the text. -->
+                                    <!--
+                                        Set the BaselineAlignment property to "Bottom"
+                                        so that the Button aligns properly with the text.
+                                    -->
                                     <InlineUIContainer BaselineAlignment="Bottom">
-                                        <Image HorizontalAlignment="Left" Width="50" Height="50" Source="/Resource/target.png"></Image>
+                                        <Image
+                                            Width="50"
+                                            Height="50"
+                                            HorizontalAlignment="Left"
+                                            Source="/Resource/target.png" />
                                     </InlineUIContainer>
-                                    Text to follow the button...
-                                </Paragraph>
+                                    Text to follow the button...</Paragraph>
                                 <Paragraph>
                                     <InlineUIContainer BaselineAlignment="Bottom">
-                                        <controls:TimeTarget HorizontalAlignment="Left" ></controls:TimeTarget>
+                                        <controls:TimeTarget HorizontalAlignment="Left" />
                                     </InlineUIContainer>
                                 </Paragraph>
                                 <BlockUIContainer>
-                                    <Image HorizontalAlignment="Left" Width="50" Height="50" Source="/Resource/target.png"></Image>
+                                    <Image
+                                        Width="50"
+                                        Height="50"
+                                        HorizontalAlignment="Left"
+                                        Source="/Resource/target.png" />
                                 </BlockUIContainer>
                                 <Paragraph>
                                     This is flow content and you can<Bold>edit me!</Bold>
@@ -83,10 +94,29 @@
                                 <Paragraph>
                                     This is flow content and you can<Bold>edit me!</Bold>
                                 </Paragraph>
-                               
+                                <BlockUIContainer FocusVisualStyle="{StaticResource BlockUIContainerFocusStyle}" IsHyphenationEnabled="True">
+                                    <StackPanel>
+                                        <Label Foreground="Blue">Choose a value:</Label>
+                                        <ComboBox>
+                                            <ComboBoxItem IsSelected="True">a</ComboBoxItem>
+                                            <ComboBoxItem>b</ComboBoxItem>
+                                            <ComboBoxItem>c</ComboBoxItem>
+                                        </ComboBox>
+                                        <Label Foreground="Red">Choose a value:</Label>
+                                        <StackPanel>
+                                            <RadioButton>x</RadioButton>
+                                            <RadioButton>y</RadioButton>
+                                            <RadioButton>z</RadioButton>
+                                        </StackPanel>
+                                        <Label>Enter a value:</Label>
+                                        <TextBox>
+                                            A text editor embedded in flow content.
+                                        </TextBox>
+                                    </StackPanel>
+                                </BlockUIContainer>
                             </FlowDocument>
-                          
-                           
+
+
                         </RichTextBox.Document>
                     </RichTextBox>
                 </ScrollViewer>

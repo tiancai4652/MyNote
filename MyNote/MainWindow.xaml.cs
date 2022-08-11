@@ -154,26 +154,7 @@ namespace MyNote
             AddIconLineInternal(ref paragraph, icontype);
             richTextBox.CaretPosition = paragraph.ContentEnd;
         }
-
-        void AddTimeTargetLine(IconType icontype)
-        {
-            Paragraph paragraph = new Paragraph();
-            Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            if (paragraphTemp != null && paragraphTemp.Inlines.Count == 1)
-            {
-                if (paragraphTemp.Inlines.First() is Run)
-                {
-                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
-                    {
-                        paragraph = paragraphTemp;
-                    }
-                }
-            }
-            AddIconLineInternal(ref paragraph, icontype);
-            richTextBox.CaretPosition = paragraph.ContentEnd;
-        }
-
-        void AddIconLineInternal(ref Paragraph paragraph,IconType icontype)
+        void AddIconLineInternal(ref Paragraph paragraph, IconType icontype)
         {
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
             Image image = new Image();
@@ -193,44 +174,36 @@ namespace MyNote
             myFlowDocument.Blocks.Add(paragraph);
             uIElementsWithFontSameHeight.Add(image);
         }
-
+        void AddTimeTargetLine(IconType icontype)
+        {
+            Paragraph paragraph = new Paragraph();
+            Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
+            if (paragraphTemp != null && paragraphTemp.Inlines.Count == 1)
+            {
+                if (paragraphTemp.Inlines.First() is Run)
+                {
+                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
+                    {
+                        paragraph = paragraphTemp;
+                    }
+                }
+            }
+            AddTimeTargetLineInternal(ref paragraph);
+            richTextBox.CaretPosition = paragraph.ContentEnd;
+        }
         void AddTimeTargetLineInternal(ref Paragraph paragraph)
         {
-            //InlineUIContainer inlineUIContainer = new InlineUIContainer();
-            //Image image = new Image();
-            //var size = MeasureFontSize();
-            //image.Width = size.Height;
-            //image.Height = size.Height;
-            //BitmapImage bi = new BitmapImage();
-            //inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
-            //bi.BeginInit();
-            //bi.UriSource = IconTypeImageUries[icontype];
-            //bi.EndInit();
-            //image.Source = bi;
-            //inlineUIContainer.Child = image;
-            ////paragraph.Inlines.Add(" ");
-            //paragraph.Inlines.Add(inlineUIContainer);
-            //paragraph.Inlines.Add(" ");
-            //myFlowDocument.Blocks.Add(paragraph);
-            //uIElementsWithFontSameHeight.Add(image);
-
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
             TimeTarget timeTarget=new TimeTarget();
             var size = MeasureFontSize();
             timeTarget.Height = size.Height;
          
-            BitmapImage bi = new BitmapImage();
-            inlineUIContainer.BaselineAlignment = BaselineAlignment.TextBottom;
-            bi.BeginInit();
-            bi.UriSource = IconTypeImageUries[icontype];
-            bi.EndInit();
-            image.Source = bi;
-            inlineUIContainer.Child = image;
-            //paragraph.Inlines.Add(" ");
+           
+            inlineUIContainer.Child = timeTarget;
             paragraph.Inlines.Add(inlineUIContainer);
             paragraph.Inlines.Add(" ");
             myFlowDocument.Blocks.Add(paragraph);
-            uIElementsWithFontSameHeight.Add(image);
+            uIElementsWithFontSameHeight.Add(timeTarget);
         }
 
         #endregion
@@ -250,23 +223,26 @@ namespace MyNote
                 System.Diagnostics.Process.Start("Explorer.exe", path);
             }
             //设置Target
-            else if (isAlt && Keyboard.IsKeyDown(Key.D1))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.D1))
             {
                 AddIconLine(IconType.Target);
             }
-            else if (isAlt && Keyboard.IsKeyDown(Key.D2))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.D2))
             {
                 AddIconLine(IconType.Idea);
             }
-            else if (isAlt && Keyboard.IsKeyDown(Key.D3))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.D3))
             {
                 AddIconLine(IconType.Arrow);
             }
-            else if (isAlt && Keyboard.IsKeyDown(Key.D4))
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.D4))
             {
                 AddIconLine(IconType.Star);
             }
-            //e.Handled = true;
+            else if (isAlt && isShift && Keyboard.IsKeyDown(Key.D0))
+            {
+                AddTimeTargetLine(IconType.Star);
+            }
         }
 
 
