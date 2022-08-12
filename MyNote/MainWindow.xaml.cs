@@ -194,7 +194,7 @@ namespace MyNote
         void AddTimeTargetLineInternal(ref Paragraph paragraph)
         {
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
-            TimeTarget timeTarget=new TimeTarget();
+            TimeTarget timeTarget=new TimeTarget(3);
             var size = MeasureFontSize();
             timeTarget.Height = size.Height;
          

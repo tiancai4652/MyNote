@@ -4,8 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace MyNote.Base
 {
@@ -26,15 +29,54 @@ namespace MyNote.Base
 
         #endregion
 
-        void Init(double workingTimeMin, DateTime? createTime)
+        public TimeTargetModel(int workingTimeMin, DateTime? createTime=null)
+        {
+            Init(workingTimeMin, createTime);
+        }
+
+        public void Close()
+        {
+            CheckTargetstateTokenSource.Cancel();
+        }
+
+        CancellationTokenSource CheckTargetstateTokenSource = new CancellationTokenSource();
+        void Init(int workingTimeMin, DateTime? createTime)
         {
             if (createTime == null)
             {
                 createTime = DateTime.Now;
             }
-            CreateTime = UpdateTime = (DateTime)createTime;
+            CreateTime = (DateTime)createTime;
+            DurationTimeMinutes = workingTimeMin;
             ExpectedTime = CreateTime.AddMinutes(workingTimeMin);
+
+
+
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    CheckTargetstate();
+                    Thread.Sleep(1000);
+                }
+            }, CheckTargetstateTokenSource.Token);
         }
+
+        void CheckTargetstate()
+        {
+            var totalMin = (DateTime.Now - CreateTime).TotalMinutes;
+            int ratio = (int)(((DurationTimeMinutes - totalMin) / DurationTimeMinutes)*4);
+            if (ratio < 0)
+            {
+                TimeTargetState = TimeTargetState.Postpone;
+            }
+            else
+            {
+                TimeTargetState = (TimeTargetState)ratio;
+            }
+        }
+
+
 
         #region INotifyPropertyChanged
 
@@ -115,6 +157,37 @@ namespace MyNote.Base
 
         #region Properties
 
+        ImageSource _TargetImagesource;
+        public ImageSource TargetImagesource
+        {
+            get
+            {
+                return _TargetImagesource;
+            }
+            set
+            {
+                SetProperty(ref _TargetImagesource, value);
+            }
+        }
+
+        TimeTargetState _TimeTargetState = TimeTargetState.One;
+        public TimeTargetState TimeTargetState
+        {
+            get
+            {
+                return _TimeTargetState;
+            }
+            set
+            {
+                SetProperty(ref _TimeTargetState, value);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    TargetImagesource = new BitmapImage(TimeTargetStateColorse[_TimeTargetState]);
+                });
+            }
+        }
+
+
         DateTime _CreateTime;
         public DateTime CreateTime
         {
@@ -128,19 +201,7 @@ namespace MyNote.Base
             }
         }
 
-        DateTime _UpdateTime;
-        public DateTime UpdateTime
-        {
-            get
-            {
-                return _UpdateTime;
-            }
-            set
-            {
-                SetProperty(ref _UpdateTime, value);
-            }
-        }
-
+     
         DateTime _ExpectedTime;
         public DateTime ExpectedTime
         {
@@ -154,18 +215,20 @@ namespace MyNote.Base
             }
         }
 
-        string _TargetDescription = string.Empty;
-        public string TargetDescription
+        int _DurationTimeMinutes;
+        public int DurationTimeMinutes
         {
             get
             {
-                return _TargetDescription;
+                return _DurationTimeMinutes;
             }
             set
             {
-                SetProperty(ref _TargetDescription, value);
+                SetProperty(ref _DurationTimeMinutes, value);
             }
         }
+
+
 
         #endregion
     }
@@ -173,12 +236,13 @@ namespace MyNote.Base
     public enum TimeTargetState
     {
         //完成
-        Finished,
+        
         One,
         Two,
         Three,
         Four,
         //推迟，需要重新设定
-        Postpone
+        Postpone,
+        Finished
     }
 }

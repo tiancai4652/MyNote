@@ -76,11 +76,7 @@
                                             Source="/Resource/target.png" />
                                     </InlineUIContainer>
                                     Text to follow the button...</Paragraph>
-                                <Paragraph>
-                                    <InlineUIContainer BaselineAlignment="Bottom">
-                                        <controls:TimeTarget HorizontalAlignment="Left" />
-                                    </InlineUIContainer>
-                                </Paragraph>
+                               
                                 <BlockUIContainer>
                                     <Image
                                         Width="50"

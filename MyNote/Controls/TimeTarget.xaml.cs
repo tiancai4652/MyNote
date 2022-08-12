@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyNote.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,18 @@ namespace MyNote.Controls
     /// </summary>
     public partial class TimeTarget : UserControl
     {
-        public TimeTarget()
+        public TimeTarget(int workingTimeMin)
         {
             InitializeComponent();
+            TimeTargetModel = new TimeTargetModel(workingTimeMin);
+            this.DataContext = TimeTargetModel;
+        }
+
+        public TimeTargetModel TimeTargetModel { get; set; }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
