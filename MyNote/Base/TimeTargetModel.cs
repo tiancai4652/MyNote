@@ -40,15 +40,15 @@ namespace MyNote.Base
         }
 
         CancellationTokenSource CheckTargetstateTokenSource = new CancellationTokenSource();
-        void Init(int workingTimeMin, DateTime? createTime)
+        void Init(int workingTimeS, DateTime? createTime)
         {
             if (createTime == null)
             {
                 createTime = DateTime.Now;
             }
             CreateTime = (DateTime)createTime;
-            DurationTimeMinutes = workingTimeMin;
-            ExpectedTime = CreateTime.AddMinutes(workingTimeMin);
+            DurationTimeS = workingTimeS;
+            ExpectedTime = CreateTime.AddSeconds(workingTimeS);
 
 
 
@@ -64,8 +64,8 @@ namespace MyNote.Base
 
         void CheckTargetstate()
         {
-            var totalMin = (DateTime.Now - CreateTime).TotalMinutes;
-            int ratio = (int)(((DurationTimeMinutes - totalMin) / DurationTimeMinutes)*4);
+            var totalS =(DateTime.Now - CreateTime).TotalSeconds;
+            double ratio = (int)((totalS / DurationTimeS) * 4);
             if (ratio < 0)
             {
                 TimeTargetState = TimeTargetState.Postpone;
@@ -215,16 +215,16 @@ namespace MyNote.Base
             }
         }
 
-        int _DurationTimeMinutes;
-        public int DurationTimeMinutes
+        double _DurationTimeS;
+        public double DurationTimeS
         {
             get
             {
-                return _DurationTimeMinutes;
+                return _DurationTimeS;
             }
             set
             {
-                SetProperty(ref _DurationTimeMinutes, value);
+                SetProperty(ref _DurationTimeS, value);
             }
         }
 

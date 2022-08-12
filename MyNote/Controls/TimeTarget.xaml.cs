@@ -21,10 +21,10 @@ namespace MyNote.Controls
     /// </summary>
     public partial class TimeTarget : UserControl
     {
-        public TimeTarget(int workingTimeMin)
+        public TimeTarget(int workingTimeS)
         {
             InitializeComponent();
-            TimeTargetModel = new TimeTargetModel(workingTimeMin);
+            TimeTargetModel = new TimeTargetModel(workingTimeS);
             this.DataContext = TimeTargetModel;
         }
 

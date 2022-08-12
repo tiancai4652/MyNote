@@ -171,18 +171,26 @@ namespace MyNote
             //paragraph.Inlines.Add(" ");
             paragraph.Inlines.Add(inlineUIContainer);
             paragraph.Inlines.Add(" ");
-            myFlowDocument.Blocks.Add(paragraph);
+            if (!myFlowDocument.Blocks.Contains(paragraph))
+            {
+                myFlowDocument.Blocks.Add(paragraph);
+            }
             uIElementsWithFontSameHeight.Add(image);
         }
         void AddTimeTargetLine(IconType icontype)
         {
             Paragraph paragraph = new Paragraph();
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            if (paragraphTemp != null && paragraphTemp.Inlines.Count == 1)
+            
+            if (paragraphTemp != null )
             {
-                if (paragraphTemp.Inlines.First() is Run)
+                if(paragraphTemp.Inlines.Count ==0)
                 {
-                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
+                    paragraph = paragraphTemp;
+                }
+                else if (paragraphTemp.Inlines.Count > 0 && paragraphTemp.Inlines.First() is Run)
+                {
+                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text.Trim()))
                     {
                         paragraph = paragraphTemp;
                     }
@@ -194,7 +202,7 @@ namespace MyNote
         void AddTimeTargetLineInternal(ref Paragraph paragraph)
         {
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
-            TimeTarget timeTarget=new TimeTarget(3);
+            TimeTarget timeTarget=new TimeTarget(3*60);
             var size = MeasureFontSize();
             timeTarget.Height = size.Height;
          
@@ -202,7 +210,10 @@ namespace MyNote
             inlineUIContainer.Child = timeTarget;
             paragraph.Inlines.Add(inlineUIContainer);
             paragraph.Inlines.Add(" ");
-            myFlowDocument.Blocks.Add(paragraph);
+            if (!myFlowDocument.Blocks.Contains(paragraph))
+            {
+                myFlowDocument.Blocks.Add(paragraph);
+            }
             uIElementsWithFontSameHeight.Add(timeTarget);
         }
 
