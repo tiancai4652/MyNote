@@ -658,7 +658,7 @@ namespace MyNote
             //判断有没有选中内容
             if (isSame)
             {
-                if (p.Paragraph.Inlines != null && p.Paragraph.Inlines.Count == 1)
+                if (p.Paragraph?.Inlines != null && p.Paragraph.Inlines.Count == 1)
                 {
                     var first = p.Paragraph.Inlines.First();
                     if (first is Run)
