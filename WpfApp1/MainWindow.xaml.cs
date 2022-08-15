@@ -43,6 +43,42 @@ namespace WpfApp1
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            //AddInlineUIContainer();
+            var result= IsNewLine();
+            MessageBox.Show(result.ToString());
+
+        }
+
+        bool IsNewLine(bool isIgnoreSpace=false)
+        {
+            var p = richTextBox.Selection.Start;
+            var selectP = richTextBox.CaretPosition;
+            var isSame = p.Equals(selectP);
+            //判断有没有选中内容
+            if (isSame)
+            {
+                if (p.Paragraph.Inlines != null && p.Paragraph.Inlines.Count == 1)
+                {
+                    var first = p.Paragraph.Inlines.First();
+                    if (first is Run)
+                    {
+                        Run run = (Run)first;
+                        if (isIgnoreSpace)
+                        {
+                            return string.IsNullOrEmpty(run.Text.Trim());
+                        }
+                        else
+                        {
+                            return string.IsNullOrEmpty(run.Text);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        void AddInlineUIContainer()
+        {
             Paragraph paragraph = new Paragraph();
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
             Image image = new Image();
@@ -57,7 +93,7 @@ namespace WpfApp1
             paragraph.Inlines.Add(inlineUIContainer);
             paragraph.Inlines.LastInline.BaselineAlignment = BaselineAlignment.Bottom;
             paragraph.Inlines.Add(" Text to follow the button...");
-          
+
             myFlowDocument.Blocks.Add(paragraph);
         }
 

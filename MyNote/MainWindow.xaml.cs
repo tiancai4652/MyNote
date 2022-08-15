@@ -141,15 +141,9 @@ namespace MyNote
         {
             Paragraph paragraph = new Paragraph();
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            if (paragraphTemp != null && paragraphTemp.Inlines.Count == 1)
+            if (!IsNewLine())
             {
-                if (paragraphTemp.Inlines.First() is Run)
-                {
-                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text))
-                    {
-                        paragraph = paragraphTemp;
-                    }
-                }
+                paragraph = paragraphTemp;
             }
             AddIconLineInternal(ref paragraph, icontype);
             richTextBox.CaretPosition = paragraph.ContentEnd;
@@ -181,20 +175,9 @@ namespace MyNote
         {
             Paragraph paragraph = new Paragraph();
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            
-            if (paragraphTemp != null )
+            if (!IsNewLine())
             {
-                if(paragraphTemp.Inlines.Count ==0)
-                {
-                    paragraph = paragraphTemp;
-                }
-                else if (paragraphTemp.Inlines.Count > 0 && paragraphTemp.Inlines.First() is Run)
-                {
-                    if (string.IsNullOrEmpty((paragraphTemp.Inlines.FirstOrDefault() as Run)?.Text.Trim()))
-                    {
-                        paragraph = paragraphTemp;
-                    }
-                }
+                paragraph = paragraphTemp;
             }
             AddTimeTargetLineInternal(ref paragraph);
             richTextBox.CaretPosition = paragraph.ContentEnd;
@@ -202,11 +185,11 @@ namespace MyNote
         void AddTimeTargetLineInternal(ref Paragraph paragraph)
         {
             InlineUIContainer inlineUIContainer = new InlineUIContainer();
-            TimeTarget timeTarget=new TimeTarget(3*60);
+            TimeTarget timeTarget = new TimeTarget(3 * 60);
             var size = MeasureFontSize();
             timeTarget.Height = size.Height;
-         
-           
+
+
             inlineUIContainer.Child = timeTarget;
             paragraph.Inlines.Add(inlineUIContainer);
             paragraph.Inlines.Add(" ");
@@ -664,7 +647,41 @@ namespace MyNote
 
 
         #endregion
+
+        #region Check
+
+        bool IsNewLine(bool isIgnoreSpace = false)
+        {
+            var p = richTextBox.Selection.Start;
+            var selectP = richTextBox.CaretPosition;
+            var isSame = p.Equals(selectP);
+            //判断有没有选中内容
+            if (isSame)
+            {
+                if (p.Paragraph.Inlines != null && p.Paragraph.Inlines.Count == 1)
+                {
+                    var first = p.Paragraph.Inlines.First();
+                    if (first is Run)
+                    {
+                        Run run = (Run)first;
+                        if (isIgnoreSpace)
+                        {
+                            return string.IsNullOrEmpty(run.Text.Trim());
+                        }
+                        else
+                        {
+                            return string.IsNullOrEmpty(run.Text);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+
+
+        #endregion
     }
 
-    
+
 }
