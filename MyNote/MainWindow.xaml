@@ -20,6 +20,23 @@
         <ResourceDictionary>
             <convertor:Corlor2BackgroundConvertor x:Key="Corlor2BackgroundConvertor" />
             <Style x:Key="BlockUIContainerFocusStyle" TargetType="BlockUIContainer" />
+            <Style x:Key="windowButtonClose" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Margin="{TemplateBinding Margin}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                Background="{TemplateBinding Background}">
+                                <Image Source="/Resource/window/close.png" Stretch="Fill" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <Border
@@ -28,100 +45,114 @@
         BorderBrush="{Binding WindowBorderCorlor, Converter={StaticResource Corlor2BackgroundConvertor}}"
         BorderThickness="1"
         CornerRadius="10">
-        <Grid Name="grid">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
-                <RowDefinition />
-                <RowDefinition Height="25" />
-            </Grid.RowDefinitions>
+        <Grid>
+            <Grid Name="grid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <Grid
+                    Name="titleGrid"
+                    Grid.Row="0"
+                    Background="{Binding Background, ElementName=border}" />
+                <Grid
+                    Name="contextGrid"
+                    Grid.Row="1"
+                    Background="{Binding Background, ElementName=richTextBox}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 
+                        <RichTextBox
+                            Name="richTextBox"
+                            Margin="10,20,0,0"
+                            Background="{Binding TextBackgroundColor, Converter={StaticResource Corlor2BackgroundConvertor}}"
+                            BorderBrush="{x:Null}"
+                            BorderThickness="0"
+                            FontFamily="Segoe UI"
+                            FontSize="{Binding TextFontSize}"
+                            Foreground="White"
+                            IsDocumentEnabled="True"
+                            RenderTransform="{Binding RenderTransform}">
 
-            <Grid
-                Name="titleGrid"
-                Grid.Row="0"
-                Margin="8"
-                Background="{Binding Background, ElementName=border}" />
-            <Grid
-                Name="contextGrid"
-                Grid.Row="1"
-                Background="{Binding Background, ElementName=richTextBox}">
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <RichTextBox.Document>
 
-                    <RichTextBox
-                        Name="richTextBox"
-                        Margin="10,20,0,0"
-                        Background="{Binding TextBackgroundColor, Converter={StaticResource Corlor2BackgroundConvertor}}"
-                        BorderBrush="{x:Null}"
-                        BorderThickness="0"
-                        FontFamily="Segoe UI"
-                        FontSize="{Binding TextFontSize}"
-                        Foreground="White"
-                        IsDocumentEnabled="True"
-                        RenderTransform="{Binding RenderTransform}">
+                                <FlowDocument Name="myFlowDocument" LineHeight="0.5">
+                                    <Paragraph>
+                                        Text to precede the button...
+                                        <!--
+                                            Set the BaselineAlignment property to "Bottom"
+                                            so that the Button aligns properly with the text.
+                                        -->
+                                        <InlineUIContainer BaselineAlignment="Bottom">
+                                            <Image
+                                                Width="50"
+                                                Height="50"
+                                                HorizontalAlignment="Left"
+                                                Source="/Resource/target.png" />
+                                        </InlineUIContainer>
+                                        Text to follow the button...</Paragraph>
 
-                        <RichTextBox.Document>
-
-                            <FlowDocument Name="myFlowDocument" LineHeight="0.5">
-                                <Paragraph>
-                                    Text to precede the button...
-                                    <!--
-                                        Set the BaselineAlignment property to "Bottom"
-                                        so that the Button aligns properly with the text.
-                                    -->
-                                    <InlineUIContainer BaselineAlignment="Bottom">
+                                    <BlockUIContainer>
                                         <Image
                                             Width="50"
                                             Height="50"
                                             HorizontalAlignment="Left"
                                             Source="/Resource/target.png" />
-                                    </InlineUIContainer>
-                                    Text to follow the button...</Paragraph>
-                               
-                                <BlockUIContainer>
-                                    <Image
-                                        Width="50"
-                                        Height="50"
-                                        HorizontalAlignment="Left"
-                                        Source="/Resource/target.png" />
-                                </BlockUIContainer>
-                                <Paragraph>
-                                    This is flow content and you can<Bold>edit me!</Bold>
-                                </Paragraph>
-                                <Paragraph>
-                                    This is flow content and you can<Bold>edit me!</Bold>
-                                </Paragraph>
-                                <BlockUIContainer FocusVisualStyle="{StaticResource BlockUIContainerFocusStyle}" IsHyphenationEnabled="True">
-                                    <StackPanel>
-                                        <Label Foreground="Blue">Choose a value:</Label>
-                                        <ComboBox>
-                                            <ComboBoxItem IsSelected="True">a</ComboBoxItem>
-                                            <ComboBoxItem>b</ComboBoxItem>
-                                            <ComboBoxItem>c</ComboBoxItem>
-                                        </ComboBox>
-                                        <Label Foreground="Red">Choose a value:</Label>
+                                    </BlockUIContainer>
+                                    <Paragraph>
+                                        This is flow content and you can<Bold>edit me!</Bold>
+                                    </Paragraph>
+                                    <Paragraph>
+                                        This is flow content and you can<Bold>edit me!</Bold>
+                                    </Paragraph>
+                                    <BlockUIContainer FocusVisualStyle="{StaticResource BlockUIContainerFocusStyle}" IsHyphenationEnabled="True">
                                         <StackPanel>
-                                            <RadioButton>x</RadioButton>
-                                            <RadioButton>y</RadioButton>
-                                            <RadioButton>z</RadioButton>
+                                            <Label Foreground="Blue">Choose a value:</Label>
+                                            <ComboBox>
+                                                <ComboBoxItem IsSelected="True">a</ComboBoxItem>
+                                                <ComboBoxItem>b</ComboBoxItem>
+                                                <ComboBoxItem>c</ComboBoxItem>
+                                            </ComboBox>
+                                            <Label Foreground="Red">Choose a value:</Label>
+                                            <StackPanel>
+                                                <RadioButton>x</RadioButton>
+                                                <RadioButton>y</RadioButton>
+                                                <RadioButton>z</RadioButton>
+                                            </StackPanel>
+                                            <Label>Enter a value:</Label>
+                                            <TextBox>
+                                                A text editor embedded in flow content.
+                                            </TextBox>
                                         </StackPanel>
-                                        <Label>Enter a value:</Label>
-                                        <TextBox>
-                                            A text editor embedded in flow content.
-                                        </TextBox>
-                                    </StackPanel>
-                                </BlockUIContainer>
-                            </FlowDocument>
+                                    </BlockUIContainer>
+                                </FlowDocument>
 
 
-                        </RichTextBox.Document>
-                    </RichTextBox>
-                </ScrollViewer>
+                            </RichTextBox.Document>
+                        </RichTextBox>
+                    </ScrollViewer>
+                </Grid>
+                <Grid
+                    Name="stateGrid"
+                    Grid.Row="2"
+                    Margin="8"
+                    Background="{Binding Background, ElementName=border}" />
             </Grid>
-            <Grid
-                Name="stateGrid"
-                Grid.Row="2"
-                Margin="8"
-                Background="{Binding Background, ElementName=border}" />
+            <StackPanel 
+               
+                Name="titleGridStackPanel"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Orientation="Horizontal">
+                <Button
+                    Width="20"
+                    Height="{Binding ActualHeight,ElementName=titleGrid}"
+                    Background="Red"
+                    Style="{StaticResource windowButtonClose}" />
+                <Button Width="20" Style="{StaticResource windowButtonClose}" />
+                <Button Width="20" Style="{StaticResource windowButtonClose}" />
+            </StackPanel>
         </Grid>
+
     </Border>
 </Window>
