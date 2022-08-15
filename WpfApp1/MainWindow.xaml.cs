@@ -45,6 +45,12 @@ namespace WpfApp1
         {
             //AddInlineUIContainer();
             var result= IsNewLine();
+            if (result)
+            {
+                richTextBox.Focus();
+                richTextBox.CaretPosition = richTextBox.CaretPosition.InsertParagraphBreak();
+                var p = richTextBox.CaretPosition.Paragraph;
+            }
             MessageBox.Show(result.ToString());
 
         }
@@ -57,7 +63,11 @@ namespace WpfApp1
             //判断有没有选中内容
             if (isSame)
             {
-                if (p.Paragraph?.Inlines != null && p.Paragraph.Inlines.Count == 1)
+                if (p.Paragraph == null)
+                {
+                    return true;
+                }
+                if (p.Paragraph.Inlines != null && p.Paragraph.Inlines.Count == 1)
                 {
                     var first = p.Paragraph.Inlines.First();
                     if (first is Run)
