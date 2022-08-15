@@ -139,11 +139,15 @@ namespace MyNote
 
         void AddIconLine(IconType icontype)
         {
-            Paragraph paragraph = new Paragraph();
+            Paragraph paragraph;
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            if (!IsNewLine())
+            if (IsNewLine())
             {
                 paragraph = paragraphTemp;
+            }
+            else
+            {
+                paragraph= GetInsertPositionParagraph();
             }
             AddIconLineInternal(ref paragraph, icontype);
             richTextBox.CaretPosition = paragraph.ContentEnd;
@@ -173,11 +177,15 @@ namespace MyNote
         }
         void AddTimeTargetLine(IconType icontype)
         {
-            Paragraph paragraph = new Paragraph();
+            Paragraph paragraph;
             Paragraph paragraphTemp = richTextBox.CaretPosition.Paragraph;
-            if (!IsNewLine())
+            if (IsNewLine())
             {
                 paragraph = paragraphTemp;
+            }
+            else
+            {
+                paragraph = GetInsertPositionParagraph();
             }
             AddTimeTargetLineInternal(ref paragraph);
             richTextBox.CaretPosition = paragraph.ContentEnd;
@@ -682,6 +690,13 @@ namespace MyNote
             return false;
         }
 
+        Paragraph GetInsertPositionParagraph()
+        {
+            richTextBox.Focus();
+            richTextBox.CaretPosition = richTextBox.CaretPosition.InsertParagraphBreak();
+            var p = richTextBox.CaretPosition.Paragraph;
+            return p;
+        }
 
 
         #endregion

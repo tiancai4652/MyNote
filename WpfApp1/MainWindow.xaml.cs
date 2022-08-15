@@ -87,6 +87,14 @@ namespace WpfApp1
             return false;
         }
 
+        Paragraph GetInsertPositionParagraph()
+        {
+            richTextBox.Focus();
+            richTextBox.CaretPosition = richTextBox.CaretPosition.InsertParagraphBreak();
+            var p = richTextBox.CaretPosition.Paragraph;
+            return p;
+        }
+
         void AddInlineUIContainer()
         {
             Paragraph paragraph = new Paragraph();
