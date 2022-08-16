@@ -48,6 +48,7 @@ namespace MyNote
             //window.LostFocus += Window_LostFocus;
             window.Activated += Window_Activated;
             window.Deactivated += Window_Deactivated;
+            window.SizeChanged += Window_SizeChanged;
             window.MouseDown += window_MouseDown;
             window.MouseUp += window_MouseUp;
             window.PreviewMouseDown += window_PreviewMouseDown;
@@ -65,6 +66,15 @@ namespace MyNote
             richTextBox.TextChanged += RichTextBox_TextChanged;
             richTextBox.KeyDown += RichTextBox_KeyDown;
             richTextBox.MouseWheel += RichTextBox_MouseWheel;
+        }
+
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            var newsize = e.NewSize;
+            borderGeometry.Rect = new Rect(0, 0, newsize.Width, newsize.Height);
+            cornerRadiusGeometry.Rect = new Rect(BorderThinkess, BorderThinkess, newsize.Width - BorderThinkess * 2, newsize.Height - BorderThinkess * 2);
         }
 
         private void Window_Deactivated(object? sender, EventArgs e)
@@ -120,6 +130,21 @@ namespace MyNote
                 SetProperty(ref _TextFontSize, value);
             }
         }
+
+        double _BorderThinkess = 1;
+        public double BorderThinkess
+        {
+            get
+            {
+                return _BorderThinkess;
+            }
+            set
+            {
+                SetProperty(ref _BorderThinkess, value);
+            }
+        }
+
+        
 
         Dictionary<IconType, Uri> IconTypeImageUries = new Dictionary<IconType, Uri>();
 
