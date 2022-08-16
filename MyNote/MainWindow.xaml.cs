@@ -67,7 +67,7 @@ namespace MyNote
         {
             MainBackgroundColor = (Color)ColorConverter.ConvertFromString("#202020");
             TextBackgroundColor = (Color)ColorConverter.ConvertFromString("#272727");
-            WindowBorderCorlor = (Color)ColorConverter.ConvertFromString("#459BAC");
+            WindowBorderCorlor = (Color)ColorConverter.ConvertFromString("#BBFFFF");
         }
 
         void InitProperties()

@@ -9,16 +9,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Name="window"
     Title="MainWindow"
-    Width="800"
-    Height="450"
+    Width="802"
+    Height="452"
     AllowsTransparency="True"
     Background="Transparent"
     ResizeMode="CanResize"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Window.Clip>
-        <RectangleGeometry Rect="0,0,800,450" RadiusX="8" RadiusY="8"></RectangleGeometry>
-    </Window.Clip>
+
     <Window.Resources>
         <ResourceDictionary>
             <convertor:Corlor2BackgroundConvertor x:Key="Corlor2BackgroundConvertor" />
@@ -42,15 +40,25 @@
             </Style>
         </ResourceDictionary>
     </Window.Resources>
-    <Border
+    <Grid >
+
+        <Path Fill="{Binding WindowBorderCorlor, Converter={StaticResource Corlor2BackgroundConvertor}}" StrokeThickness="1" >
+            <Path.Data>
+                <RectangleGeometry Rect="0,0,802,452" RadiusX="8" RadiusY="8"></RectangleGeometry>
+            </Path.Data>
+        </Path>
+
+        <Grid>
+        <Grid.Clip>
+            <RectangleGeometry Rect="1,1,800,450" RadiusX="8" RadiusY="8"></RectangleGeometry>
+        </Grid.Clip>
+        <Border
         Name="border"
         Background="{Binding MainBackgroundColor, Converter={StaticResource Corlor2BackgroundConvertor}}"
-        BorderBrush="{Binding WindowBorderCorlor, Converter={StaticResource Corlor2BackgroundConvertor}}"
+     
         BorderThickness="0"
-        CornerRadius="8"
+
         >
-   
-      
         <Grid >
             <Grid Name="grid" >
                 
@@ -162,4 +170,6 @@
         </Grid>
 
     </Border>
+    </Grid>
+    </Grid>
 </Window>
