@@ -13,6 +13,68 @@
     ResizeMode="CanResizeWithGrip"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="windowButtonClose" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid
+                                x:Name="grid"
+                                Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}"
+                                Margin="{TemplateBinding Margin}"
+                                HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                >
+                                <Image
+                                    x:Name="image"
+                                    Source="/Resource/window/close.png"
+                                    Stretch="Uniform" Margin="0,0,-61,-61" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter TargetName="grid" Property="Background" Value="{DynamicResource colorDarkGrayBrush}" />
+                                </Trigger>
+                                <!--<Trigger Property="IsMouseOver" Value="False">
+                                    <Setter TargetName="image" Property="Source" Value="../Resources/ImageFromUI/上一页.png" />
+                                </Trigger>-->
+                                <!--<MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsEnabled" Value="true" />
+                                        <Condition Property="IsMouseOver" Value="true" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="border" Property="Background" Value="#F6F7F9" />
+                                </MultiTrigger>
+
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsEnabled" Value="true" />
+                                        <Condition Property="IsPressed" Value="true" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="border" Property="Background" Value="#F6F7F9" />
+                                </MultiTrigger>-->
+
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+            <Color x:Key="colorDark">#202020</Color>
+            <Color x:Key="colorDarkGray">#272727</Color>
+            <Color x:Key="colorBrightBorder">#BBFFFF</Color>
+            <Color x:Key="colorGrayBorder">#BBFFFF</Color>
+
+            <SolidColorBrush x:Key="colorDarktBrush" Color="{StaticResource colorDark}" />
+            <SolidColorBrush x:Key="colorDarkGrayBrush" Color="{StaticResource colorDarkGray}" />
+            <SolidColorBrush x:Key="colorBrightBorderBrush" Color="{StaticResource colorBrightBorder}" />
+            <SolidColorBrush x:Key="colorGrayBorderBrush" Color="{StaticResource colorGrayBorder}" />
+
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <RichTextBox
             Name="richTextBox"
@@ -66,5 +128,10 @@
             Width="50"
             Height="50"
             Click="Button_Click_1" />
+
+        <Button Width="40"  Height="40" Style="{StaticResource windowButtonClose}" />
+        <!--<Grid Background="Red">
+            <Image Source="/Resource/window/max.png" Stretch="Fill" Width="40" Height="40"></Image>
+        </Grid>--> 
     </Grid>
 </Window>

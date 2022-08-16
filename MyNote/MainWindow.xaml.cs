@@ -756,6 +756,21 @@ namespace MyNote
 
 
         #endregion
+
+        private void windowMinBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = this.WindowState == WindowState.Minimized ? WindowState.Normal : WindowState.Minimized;
+        }
+
+        private void windowMaxBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = this.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void windowCloseBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 
 

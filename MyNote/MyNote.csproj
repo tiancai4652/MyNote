@@ -9,12 +9,36 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\window\close.png" />
+    <None Remove="Resource\window\close2.png" />
+    <None Remove="Resource\window\max.png" />
+    <None Remove="Resource\window\max2.png" />
+    <None Remove="Resource\window\min.png" />
+    <None Remove="Resource\window\min2.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Resource\book.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\window\close.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\window\close2.png" />
+    <Resource Include="Resource\window\max.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\window\max2.png" />
+    <Resource Include="Resource\window\min.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\window\min2.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,15 +70,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resource\todo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resource\window\close.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resource\window\max.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resource\window\min.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
