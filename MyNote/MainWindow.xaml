@@ -13,7 +13,7 @@
     Height="452"
     AllowsTransparency="True"
     Background="Transparent"
-    ResizeMode="CanResize"
+    ResizeMode="CanResizeWithGrip"
     WindowStyle="None"
     mc:Ignorable="d">
 
