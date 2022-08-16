@@ -40,8 +40,14 @@ namespace MyNote
             InitProperties();
         }
 
+        #region Init
+
         void InitEvent()
         {
+            //window.GotFocus += Window_GotFocus;
+            //window.LostFocus += Window_LostFocus;
+            window.Activated += Window_Activated;
+            window.Deactivated += Window_Deactivated;
             window.MouseDown += window_MouseDown;
             window.MouseUp += window_MouseUp;
             window.PreviewMouseDown += window_PreviewMouseDown;
@@ -61,13 +67,31 @@ namespace MyNote
             richTextBox.MouseWheel += RichTextBox_MouseWheel;
         }
 
+        private void Window_Deactivated(object? sender, EventArgs e)
+        {
+            WindowBorderCorlor = colorDark;
+        }
 
+        private void Window_Activated(object? sender, EventArgs e)
+        {
+            WindowBorderCorlor = colorBrightBorder;
+        }
+
+        //private void Window_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    WindowBorderCorlor = colorDark;
+        //}
+
+        //private void Window_GotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    WindowBorderCorlor = colorBrightBorder;
+        //}
 
         void InitCorlor()
         {
-            MainBackgroundColor = (Color)ColorConverter.ConvertFromString("#202020");
-            TextBackgroundColor = (Color)ColorConverter.ConvertFromString("#272727");
-            WindowBorderCorlor = (Color)ColorConverter.ConvertFromString("#BBFFFF");
+            MainBackgroundColor = colorDark;
+            TextBackgroundColor = colorDarkGray;
+            WindowBorderCorlor = colorBrightBorder;
         }
 
         void InitProperties()
@@ -78,6 +102,8 @@ namespace MyNote
             IconTypeImageUries.Add(IconType.Target, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\target.png", UriKind.RelativeOrAbsolute));
             IconTypeImageUries.Add(IconType.Todo, new Uri(Environment.CurrentDirectory + "\\Resource" + "\\todo.png", UriKind.RelativeOrAbsolute));
         }
+
+        #endregion
 
         #region Properties
 
@@ -465,6 +491,11 @@ namespace MyNote
         #endregion
 
         #region Color
+
+        Color colorDark= (Color) ColorConverter.ConvertFromString("#202020");
+        Color colorDarkGray = (Color) ColorConverter.ConvertFromString("#272727");
+        Color colorBrightBorder = (Color) ColorConverter.ConvertFromString("#BBFFFF");
+        Color colorGrayBorder = (Color)ColorConverter.ConvertFromString("#BBFFFF");
 
         private Color _MainBackgroundColor;
         public Color MainBackgroundColor
