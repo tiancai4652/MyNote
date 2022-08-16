@@ -16,6 +16,9 @@
     ResizeMode="CanResize"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.Clip>
+        <RectangleGeometry Rect="0,0,800,450" RadiusX="8" RadiusY="8"></RectangleGeometry>
+    </Window.Clip>
     <Window.Resources>
         <ResourceDictionary>
             <convertor:Corlor2BackgroundConvertor x:Key="Corlor2BackgroundConvertor" />
@@ -43,10 +46,14 @@
         Name="border"
         Background="{Binding MainBackgroundColor, Converter={StaticResource Corlor2BackgroundConvertor}}"
         BorderBrush="{Binding WindowBorderCorlor, Converter={StaticResource Corlor2BackgroundConvertor}}"
-        BorderThickness="1"
-        CornerRadius="10">
-        <Grid>
-            <Grid Name="grid">
+        BorderThickness="0"
+        CornerRadius="8"
+        >
+   
+      
+        <Grid >
+            <Grid Name="grid" >
+                
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25" />
                     <RowDefinition />
@@ -139,7 +146,7 @@
                     Background="{Binding Background, ElementName=border}" />
             </Grid>
             <StackPanel 
-               
+            
                 Name="titleGridStackPanel"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
